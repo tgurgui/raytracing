@@ -50,11 +50,11 @@ ExitStatus App::Application::run() {
                     ImGuiConfigFlags_ViewportsEnable;
 
   // ImGUI font
-  const float font_scaling_factor{m_window->get_scale()};
+  /*const float font_scaling_factor{m_window->get_scale()};
   const float font_size{18.0F * font_scaling_factor};
   io.Fonts->AddFontFromFileTTF("fonts/Manrope.ttf", font_size);
   io.FontDefault = io.Fonts->AddFontFromFileTTF("fonts/Manrope.ttf", font_size);
-  io.FontGlobalScale = 1.0F / font_scaling_factor;
+  io.FontGlobalScale = 1.0F / font_scaling_factor;*/
 
   // Setup Platform/Renderer backends
   ImGui_ImplSDL2_InitForSDLRenderer(m_window->get_native_window(), m_window->get_native_renderer());
