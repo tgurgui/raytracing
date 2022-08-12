@@ -22,6 +22,7 @@ Application::Application(const std::string& title) {
   }
 
   m_window = std::make_unique<Window>(Window::Settings{title});
+  m_raytracer = std::make_unique<Raytracer>(Raytracer{});
 }
 
 Application::~Application() {
@@ -96,17 +97,42 @@ ExitStatus App::Application::run() {
           ImGui::EndMenu();
         }
         if (ImGui::BeginMenu("View")) {
-          ImGui::MenuItem("Some Panel", nullptr, &m_show_some_panel);
+          ImGui::MenuItem("Settings", nullptr, &m_show_some_panel);
           ImGui::EndMenu();
         }
 
         ImGui::EndMainMenuBar();
       }
 
-      // Whatever GUI to implement here ...
+      // Scene settings widget ...
       if (m_show_some_panel) {
-        ImGui::Begin("Some panel", &m_show_some_panel);
+        ImGui::Begin("Scene settings", &m_show_some_panel);
         ImGui::Text("Hello World");
+        static int scene_width = m_raytracer->width();
+        ImGui::InputInt("Width", &scene_width);
+        static int scene_height = m_raytracer->height();
+        ImGui::InputInt("Height", &scene_height);
+        static int scene_samples_per_pixel = m_raytracer->samplesPerPixel();
+        ImGui::InputInt("Samples/pixel", &scene_samples_per_pixel);
+        if(ImGui::Button("Render")) // https://github.com/ocornut/imgui/issues/2481
+        {
+          m_raytracer->setWidth(scene_width);
+          m_raytracer->setHeight(scene_height);
+          m_raytracer->setSamplesPerPixel(scene_samples_per_pixel);
+          m_texture = SDL_CreateTextureFromSurface(m_window->get_native_renderer(), m_raytracer->trace().GetSDLSurface());  //https://stackoverflow.com/questions/46155113/sdl2-draw-scene-to-texture-sdl2-rendertexture-like-sfml
+        }
+        ImGui::End();
+      }
+
+      // Display image
+      if(m_texture)
+      {
+        ImGui::SetNextWindowSize(ImVec2(0,0));  // https://github.com/ocornut/imgui/issues/2808
+        ImGui::Begin("Scene");
+        ImGui::Text("size = %d x %d", m_raytracer->width(), m_raytracer->height());
+        static float zoom = 1.0;
+        ImGui::SliderFloat("Zoom", &zoom, 0.25, 3.0, 0, 0);
+        ImGui::Image(m_texture, ImVec2((float)m_raytracer->width()*zoom, (float)m_raytracer->height()*zoom));
         ImGui::End();
       }
     }

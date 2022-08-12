@@ -6,10 +6,11 @@
 
 #include <memory>
 #include <string>
-#include <vector>
+
+#include "SDL.h"
 
 #include "Core/Window.hpp"
-#include "SDL.h"
+#include "Raytracer/raytracer.hpp"
 
 namespace App {
 
@@ -36,6 +37,8 @@ class Application {
  private:
   ExitStatus m_exit_status{ExitStatus::SUCCESS};
   std::unique_ptr<Window> m_window{nullptr};
+  std::unique_ptr<Raytracer> m_raytracer{nullptr};
+  SDL_Texture* m_texture{nullptr};
 
   bool m_running{true};
   bool m_minimized{false};
