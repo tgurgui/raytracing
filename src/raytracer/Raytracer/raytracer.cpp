@@ -11,16 +11,6 @@
 #include "material.h"
 #include "sphere.h"
 
-// https://stackoverflow.com/a/20070273
-void setPixel(SDL_Surface* surface, int i, int j, int red, int green, int blue)
-{
-    SDL_LockSurface(surface);
-    Uint32 * const target_pixel = (Uint32 *) ((Uint8 *) surface->pixels
-                                            + j * surface->pitch
-                                            + i * surface->format->BytesPerPixel);
-    *target_pixel = SDL_MapRGBA(surface->format, red, green, blue, 255);    // https://wiki.libsdl.org/SDL_MapRGBA
-    SDL_UnlockSurface(surface);
-}
 
 color ray_color(const ray& r, const hittable& world, int depth) {
     hit_record rec;
@@ -90,18 +80,16 @@ hittable_list random_scene() {
     return world;
 }
 
-Surface Raytracer::trace()
+void Raytracer::trace(std::vector<unsigned char>& texture)
 {
     // Image
     double aspect_ratio = (double)m_width / m_height;
     const int max_depth = 50;
 
     // World
-
     auto world = random_scene();
 
     // Camera
-
     point3 lookfrom(13,2,3);
     point3 lookat(0,0,0);
     vec3 vup(0,1,0);
@@ -111,9 +99,6 @@ Surface Raytracer::trace()
     camera cam(lookfrom, lookat, vup, 20, aspect_ratio, aperture, dist_to_focus);
 
     // Render
-    auto* sdlSurface = SDL_CreateRGBSurface(0, m_width, m_height, 32, 0, 0, 0, 0);  // https://wiki.libsdl.org/SDL_CreateRGBSurface
-    auto surface = Surface(sdlSurface, true);
-
     for (int j = 0; j < m_height; ++j) {
         std::cerr << "\rScanlines remaining: " << m_height - j - 1 << ' ' << std::flush;
         for (int i = 0; i < m_width; ++i) {
@@ -131,16 +116,22 @@ Surface Raytracer::trace()
                 auto scale = 1.0 / m_samples_per_pixel;
                 pixel_color = scale * pixel_color;
 
+                int index = (j * m_width + i) * 4;
+
                 auto red = static_cast<int>(256 * clamp(sqrt(pixel_color.x()), 0.0, 0.999));
                 auto green = static_cast<int>(256 * clamp(sqrt(pixel_color.y()), 0.0, 0.999));
                 auto blue = static_cast<int>(256 * clamp(sqrt(pixel_color.z()), 0.0, 0.999));
                 
-                setPixel(surface.GetSDLSurface(), i, m_height - j - 1, red, green, blue);
+                texture[index + 0] = red;
+                texture[index + 1] = green;
+                texture[index + 2] = blue;
+                texture[index + 3] = 255; // Aplha channel (fully opaque)
+
+
             }
 
         }
     }
 
     std::cerr << "\nDone.\n";
-    return surface;
 }

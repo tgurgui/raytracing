@@ -6,8 +6,7 @@
 
 #include <string>
 
-#include "SDL.h"
-
+#include <SFML/Graphics/RenderWindow.hpp>
 namespace App {
 
 class Window {
@@ -28,12 +27,12 @@ class Window {
 
   [[nodiscard]] float get_scale() const;
 
-  [[nodiscard]] SDL_Window* get_native_window() const;
-  [[nodiscard]] SDL_Renderer* get_native_renderer() const;
+  [[nodiscard]] std::shared_ptr<sf::RenderWindow> get_native_window() const;
+  //[[nodiscard]] SDL_Renderer* get_native_renderer() const;
 
  private:
-  SDL_Window* m_window{nullptr};
-  SDL_Renderer* m_renderer{nullptr};
+   std::shared_ptr<sf::RenderWindow> m_window{nullptr};
+  //SDL_Renderer* m_renderer{nullptr};
 };
 
 }  // namespace App

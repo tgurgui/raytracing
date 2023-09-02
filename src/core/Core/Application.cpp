@@ -4,8 +4,10 @@
 
 #include "Application.hpp"
 
-#include <backends/imgui_impl_sdl.h>
-#include <backends/imgui_impl_sdlrenderer.h>
+#include <SFML/System/Clock.hpp>
+#include <SFML/Window/Event.hpp>
+#include <SFML/Graphics.hpp>
+#include <imgui-SFML.h>
 #include <imgui.h>
 
 #include "Core/Debug/Instrumentor.hpp"
@@ -15,12 +17,6 @@ namespace App {
 Application::Application(const std::string& title) {
   APP_PROFILE_FUNCTION();
 
-  unsigned int init_flags{SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER};
-  if (SDL_Init(init_flags) != 0) {
-    APP_ERROR("Error: %s\n", SDL_GetError());
-    m_exit_status = ExitStatus::FAILURE;
-  }
-
   m_window = std::make_unique<Window>(Window::Settings{title});
   m_raytracer = std::make_unique<Raytracer>(Raytracer{});
 }
@@ -28,11 +24,7 @@ Application::Application(const std::string& title) {
 Application::~Application() {
   APP_PROFILE_FUNCTION();
 
-  ImGui_ImplSDLRenderer_Shutdown();
-  ImGui_ImplSDL2_Shutdown();
-  ImGui::DestroyContext();
-
-  SDL_Quit();
+  ImGui::SFML::Shutdown();
 }
 
 ExitStatus App::Application::run() {
@@ -43,12 +35,12 @@ ExitStatus App::Application::run() {
   }
 
   // Setup Dear ImGui context
-  IMGUI_CHECKVERSION();
-  ImGui::CreateContext();
-  ImGuiIO& io{ImGui::GetIO()};
+  //IMGUI_CHECKVERSION();
+  //ImGui::CreateContext();
+  //ImGuiIO& io{ImGui::GetIO()};
 
-  io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_DockingEnable |
-                    ImGuiConfigFlags_ViewportsEnable;
+  //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_DockingEnable |
+  //                  ImGuiConfigFlags_ViewportsEnable;
 
   // ImGUI font
   /*const float font_scaling_factor{m_window->get_scale()};
@@ -58,36 +50,35 @@ ExitStatus App::Application::run() {
   io.FontGlobalScale = 1.0F / font_scaling_factor;*/
 
   // Setup Platform/Renderer backends
-  ImGui_ImplSDL2_InitForSDLRenderer(m_window->get_native_window(), m_window->get_native_renderer());
-  ImGui_ImplSDLRenderer_Init(m_window->get_native_renderer());
-
+  ImGui::SFML::Init(*m_window->get_native_window());
+  sf::Clock deltaClock;
+  m_texture.resize(m_raytracer->width() * m_raytracer->height() * 4);
+  sf::Texture texture;
+  texture.create(m_raytracer->width(), m_raytracer->height());
   m_running = true;
   while (m_running) {
     APP_PROFILE_SCOPE("MainLoop");
 
-    SDL_Event event{};
-    while (SDL_PollEvent(&event) == 1) {
+    sf::Event event;
+    while (m_window->get_native_window()->pollEvent(event)) {
       APP_PROFILE_SCOPE("EventPolling");
 
-      ImGui_ImplSDL2_ProcessEvent(&event);
+      ImGui::SFML::ProcessEvent(event);
 
-      if (event.type == SDL_QUIT) {
+      if (event.type == sf::Event::Closed) {
         stop();
       }
 
-      if (event.type == SDL_WINDOWEVENT &&
+      /*if (event.type == SDL_WINDOWEVENT &&
           event.window.windowID == SDL_GetWindowID(m_window->get_native_window())) {
         on_event(event.window);
-      }
+      }*/
     }
 
     // Start the Dear ImGui frame
-    ImGui_ImplSDLRenderer_NewFrame();
-    ImGui_ImplSDL2_NewFrame();
-    ImGui::NewFrame();
-
+    ImGui::SFML::Update(*m_window->get_native_window(), deltaClock.restart());
+    
     if (!m_minimized) {
-      ImGui::DockSpaceOverViewport();
 
       if (ImGui::BeginMainMenuBar()) {
         if (ImGui::BeginMenu("File")) {
@@ -119,31 +110,32 @@ ExitStatus App::Application::run() {
           m_raytracer->setWidth(scene_width);
           m_raytracer->setHeight(scene_height);
           m_raytracer->setSamplesPerPixel(scene_samples_per_pixel);
-          m_texture = SDL_CreateTextureFromSurface(m_window->get_native_renderer(), m_raytracer->trace().GetSDLSurface());  //https://stackoverflow.com/questions/46155113/sdl2-draw-scene-to-texture-sdl2-rendertexture-like-sfml
+          m_raytracer->trace(m_texture); 
         }
         ImGui::End();
       }
 
       // Display image
-      if(m_texture)
       {
         ImGui::SetNextWindowSize(ImVec2(0,0));  // https://github.com/ocornut/imgui/issues/2808
         ImGui::Begin("Scene");
         ImGui::Text("size = %d x %d", m_raytracer->width(), m_raytracer->height());
         static float zoom = 1.0;
         ImGui::SliderFloat("Zoom", &zoom, 0.25, 3.0, 0, 0);
-        ImGui::Image(m_texture, ImVec2((float)m_raytracer->width()*zoom, (float)m_raytracer->height()*zoom));
+
+        // Create SFML texture from the image data
+        texture.update(/*reinterpret_cast<const sf::Uint8*>*/(m_texture.data()));
+
+        // Display the texture 
+        ImGui::Image(texture, ImVec2((float)m_raytracer->width()*zoom, (float)m_raytracer->height()*zoom));
         ImGui::End();
       }
     }
 
     // Rendering
-    ImGui::Render();
-
-    SDL_SetRenderDrawColor(m_window->get_native_renderer(), 100, 100, 100, 255);
-    SDL_RenderClear(m_window->get_native_renderer());
-    ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
-    SDL_RenderPresent(m_window->get_native_renderer());
+    m_window->get_native_window()->clear();
+    ImGui::SFML::Render(*m_window->get_native_window());
+    m_window->get_native_window()->display();
   }
 
   return m_exit_status;
@@ -153,7 +145,7 @@ void App::Application::stop() {
   m_running = false;
 }
 
-void Application::on_event(const SDL_WindowEvent& event) {
+/*void Application::on_event(const SDL_WindowEvent& event) {
   switch (event.event) {
     case SDL_WINDOWEVENT_CLOSE:
       return on_close();
@@ -162,7 +154,7 @@ void Application::on_event(const SDL_WindowEvent& event) {
     case SDL_WINDOWEVENT_SHOWN:
       return on_shown();
   }
-}
+}*/
 
 void Application::on_minimize() {
   m_minimized = true;

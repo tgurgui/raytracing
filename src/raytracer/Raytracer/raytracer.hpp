@@ -1,5 +1,5 @@
 #pragma once
-#include "surface.hpp"
+#include<vector>
 
 class Raytracer 
 {
@@ -7,7 +7,7 @@ public:
 
     Raytracer() = default;
 
-    Surface trace();
+    void trace(std::vector<unsigned char>& texture);
     int width() const {return m_width;}
     int height() const {return m_height;}
     int samplesPerPixel() const {return m_samples_per_pixel;}

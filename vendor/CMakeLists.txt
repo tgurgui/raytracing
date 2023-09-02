@@ -14,19 +14,30 @@ FetchContent_Declare(
 )
 add_subdirectory(fmt)
 
+# SFML
+FetchContent_Declare(
+  sfml
+  URL https://github.com/SFML/SFML/archive/refs/tags/2.5.1.zip
+  URL_MD5 2c4438b3e5b2d81a6e626ecf72bf75be
+)
+add_subdirectory(sfml)
+
+# Dear ImGui
 FetchContent_Declare(
   imgui
-  GIT_REPOSITORY "https://github.com/ocornut/imgui.git"
-  GIT_TAG cb8ead1f7198924f97e52973d115e1d4eaeda2f3 # docking-latest
+  GIT_REPOSITORY https://github.com/ocornut/imgui
+  GIT_TAG 35b1148efb839381b84de9290d9caf0b66ad7d03 # 1.82
 )
-add_subdirectory(imgui)
 
+FetchContent_MakeAvailable(imgui)
+
+# ImGui-SFML
 FetchContent_Declare(
-  SDL2
-  GIT_REPOSITORY "https://github.com/libsdl-org/SDL.git"
-  GIT_TAG release-2.0.22
+  imgui-sfml
+  GIT_REPOSITORY https://github.com/SFML/imgui-sfml
+  GIT_TAG 82dc2033e51b8323857c3ae1cf1f458b3a933c35 # 2.3
 )
-add_subdirectory(sdl)
+add_subdirectory(imgui-sfml)
 
 FetchContent_Declare(
   spdlog
