@@ -3,8 +3,8 @@ cmake_minimum_required(VERSION 3.1.0)
 include(cmake/UniversalAppleBuild.cmake)
 
 project(
-  BasicGuiProjectSetup
-  DESCRIPTION "Base gui project setup."
+  Raytracing
+  DESCRIPTION "Fun with raytracing and ImGUI"
   LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)

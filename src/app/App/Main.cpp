@@ -14,7 +14,7 @@ int main() {
 
     {
       APP_PROFILE_SCOPE("Test scope");
-      App::Application app{"GUI Template"};
+      App::Application app{"Raytracing"};
       app.run();
     }
 

@@ -1,17 +1,5 @@
-# Base GUI project setup with SDL2
+# Raytracing + ImGUI
 
-C++ gui project template with SDL2.
+Repo forked from [Base GUI project setup with SDL2](https://github.com/MartinHelmut/cpp-gui-template-sdl2). Updated to use [ImGui-SFML](https://github.com/SFML/imgui-sfml) instead of SDL2.
 
-## Setup
-
-This project requires [Litr](https://github.com/krieselreihe/litr).
-
-Quick setup to build and run the application:
-
-```shell
-litr build,start
-```
-
-## Disclaimer
-
-Special acknowledgment to the amazing open source font [Manrope](https://manropefont.com).
+Raytracer based on [Raytracing in oe weekend](https://github.com/RayTracing/raytracing.github.io/).
