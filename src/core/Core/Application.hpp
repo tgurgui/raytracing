@@ -27,9 +27,6 @@ class Application {
   ExitStatus run();
   void stop();
 
-  //void on_event(const SDL_WindowEvent& event);
-  void on_minimize();
-  void on_shown();
   void on_close();
 
  private:
@@ -39,7 +36,6 @@ class Application {
   std::vector<unsigned char> m_texture;
 
   bool m_running{true};
-  bool m_minimized{false};
   bool m_show_some_panel{true};
 };
 

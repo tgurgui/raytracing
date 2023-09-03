@@ -5,6 +5,7 @@
 #pragma once
 
 #include <string>
+#include <memory>
 
 #include <SFML/Graphics/RenderWindow.hpp>
 namespace App {
@@ -25,14 +26,10 @@ class Window {
   Window& operator=(Window other) = delete;
   Window& operator=(Window&& other) = delete;
 
-  [[nodiscard]] float get_scale() const;
-
   [[nodiscard]] std::shared_ptr<sf::RenderWindow> get_native_window() const;
-  //[[nodiscard]] SDL_Renderer* get_native_renderer() const;
 
  private:
    std::shared_ptr<sf::RenderWindow> m_window{nullptr};
-  //SDL_Renderer* m_renderer{nullptr};
 };
 
 }  // namespace App
