@@ -116,7 +116,7 @@ void Raytracer::trace(std::vector<unsigned char>& texture)
                 auto scale = 1.0 / m_samples_per_pixel;
                 pixel_color = scale * pixel_color;
 
-                int index = (j * m_width + i) * 4;
+                int index = ((m_height - j - 1) * m_width + i) * 4;
 
                 auto red = static_cast<int>(256 * clamp(sqrt(pixel_color.x()), 0.0, 0.999));
                 auto green = static_cast<int>(256 * clamp(sqrt(pixel_color.y()), 0.0, 0.999));
