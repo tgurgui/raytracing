@@ -82,6 +82,7 @@ hittable_list random_scene() {
 
 void Raytracer::trace(std::vector<unsigned char>& texture)
 {
+    shouldStop = false;
     // Image
     double aspect_ratio = (double)m_width / m_height;
     const int max_depth = 50;
@@ -101,6 +102,8 @@ void Raytracer::trace(std::vector<unsigned char>& texture)
     // Render
     for (int j = 0; j < m_height; ++j) {
         std::cerr << "\rScanlines remaining: " << m_height - j - 1 << ' ' << std::flush;
+        if (shouldStop)
+                break;
         for (int i = 0; i < m_width; ++i) {
             color pixel_color(0,0,0);
             for (int s = 0; s < m_samples_per_pixel; ++s) {

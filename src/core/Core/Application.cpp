@@ -18,7 +18,7 @@ Application::Application(const std::string& title) {
   APP_PROFILE_FUNCTION();
 
   m_window = std::make_unique<Window>(Window::Settings{title});
-  m_raytracer = std::make_unique<Raytracer>(Raytracer{});
+  m_raytracer = std::make_unique<Raytracer>();
 }
 
 Application::~Application() {
@@ -88,7 +88,14 @@ ExitStatus App::Application::run() {
         m_raytracer->setWidth(scene_width);
         m_raytracer->setHeight(scene_height);
         m_raytracer->setSamplesPerPixel(scene_samples_per_pixel);
-        m_raytracer->trace(m_texture); 
+        m_raytracer->stopRendering();  // Make sure to reset the flag
+
+        // Start the ray tracing process in a separate thread
+        std::thread renderingThread([&]() {
+            m_raytracer->trace(m_texture);
+            //isRendering = false;
+        });
+        renderingThread.detach();
       }
       ImGui::End();
     }
