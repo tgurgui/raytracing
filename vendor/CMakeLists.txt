@@ -11,6 +11,8 @@ FetchContent_Declare(
   fmt
   GIT_REPOSITORY "https://github.com/fmtlib/fmt.git"
   GIT_TAG 9.0.0
+  CMAKE_ARGS
+    -DCMAKE_POSITION_INDEPENDENT_CODE=TRUE
 )
 add_subdirectory(fmt)
 
