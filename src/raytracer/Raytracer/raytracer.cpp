@@ -82,7 +82,7 @@ hittable_list random_scene() {
 
 void Raytracer::trace(std::vector<unsigned char>& texture)
 {
-    shouldStop = false;
+    m_is_rendering = true;  // Start rendering
     // Image
     double aspect_ratio = (double)m_width / m_height;
     const int max_depth = 50;
@@ -102,8 +102,9 @@ void Raytracer::trace(std::vector<unsigned char>& texture)
     // Render
     for (int j = 0; j < m_height; ++j) {
         std::cerr << "\rScanlines remaining: " << m_height - j - 1 << ' ' << std::flush;
-        if (shouldStop)
+        if (!m_is_rendering)
                 break;
+
         for (int i = 0; i < m_width; ++i) {
             color pixel_color(0,0,0);
             for (int s = 0; s < m_samples_per_pixel; ++s) {
@@ -119,22 +120,22 @@ void Raytracer::trace(std::vector<unsigned char>& texture)
                 auto scale = 1.0 / m_samples_per_pixel;
                 pixel_color = scale * pixel_color;
 
+                // Convert color values to unsigned int
+                auto red = static_cast<unsigned int>(256 * clamp(sqrt(pixel_color.x()), 0.0, 0.999));
+                auto green = static_cast<unsigned int>(256 * clamp(sqrt(pixel_color.y()), 0.0, 0.999));
+                auto blue = static_cast<unsigned int>(256 * clamp(sqrt(pixel_color.z()), 0.0, 0.999));
+
+                // Write color values into image
                 int index = ((m_height - j - 1) * m_width + i) * 4;
 
-                auto red = static_cast<int>(256 * clamp(sqrt(pixel_color.x()), 0.0, 0.999));
-                auto green = static_cast<int>(256 * clamp(sqrt(pixel_color.y()), 0.0, 0.999));
-                auto blue = static_cast<int>(256 * clamp(sqrt(pixel_color.z()), 0.0, 0.999));
-                
                 texture[index + 0] = red;
                 texture[index + 1] = green;
                 texture[index + 2] = blue;
                 texture[index + 3] = 255; // Aplha channel (fully opaque)
-
-
             }
-
         }
     }
 
     std::cerr << "\nDone.\n";
+    m_is_rendering = false;  // Finished rendering
 }

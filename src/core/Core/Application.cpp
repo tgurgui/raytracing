@@ -83,19 +83,29 @@ ExitStatus App::Application::run() {
       ImGui::InputInt("Height", &scene_height);
       static int scene_samples_per_pixel = m_raytracer->samplesPerPixel();
       ImGui::InputInt("Samples/pixel", &scene_samples_per_pixel);
-      if(ImGui::Button("Render")) // https://github.com/ocornut/imgui/issues/2481
-      {
-        m_raytracer->setWidth(scene_width);
-        m_raytracer->setHeight(scene_height);
-        m_raytracer->setSamplesPerPixel(scene_samples_per_pixel);
-        m_raytracer->stopRendering();  // Make sure to reset the flag
 
-        // Start the ray tracing process in a separate thread
-        std::thread renderingThread([&]() {
-            m_raytracer->trace(m_texture);
-            //isRendering = false;
-        });
-        renderingThread.detach();
+      if(m_raytracer->isRendering())
+      {
+        if(ImGui::Button("Stop")) // https://github.com/ocornut/imgui/issues/2481
+        {
+          m_raytracer->stopRendering();
+        }
+      }
+      else{
+        if(ImGui::Button("Render")) // https://github.com/ocornut/imgui/issues/2481
+        {
+          m_raytracer->setWidth(scene_width);
+          m_raytracer->setHeight(scene_height);
+          m_raytracer->setSamplesPerPixel(scene_samples_per_pixel);
+          //m_raytracer->stopRendering();  // Make sure to reset the flag
+
+          // Start the ray tracing process in a separate thread
+          std::thread renderingThread([&]() {
+              m_raytracer->trace(m_texture);
+              //isRendering = false;
+          });
+          renderingThread.detach();
+        }
       }
       ImGui::End();
     }

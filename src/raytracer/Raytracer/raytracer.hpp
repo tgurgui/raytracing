@@ -18,10 +18,15 @@ public:
     void setSamplesPerPixel(int samples_per_pixel) {m_samples_per_pixel = samples_per_pixel;}
     void stopRendering()
     {
-        shouldStop = true;
+        m_is_rendering = false;
+    }
+
+    bool isRendering()
+    {
+        return m_is_rendering;
     }
 
 private:
     int m_width{1200}, m_height{675}, m_samples_per_pixel{5};
-    std::atomic<bool> shouldStop{ false };  // Atomic flag to indicate if rendering should be stopped
+    std::atomic<bool> m_is_rendering{ false };  // Atomic flag to indicate is rendering
 };
