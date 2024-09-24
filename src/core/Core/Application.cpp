@@ -36,10 +36,8 @@ ExitStatus App::Application::run() {
 
   // Setup Platform/Renderer backends
   ImGui::SFML::Init(*m_window->get_native_window());
-  sf::Clock deltaClock;
-  m_texture.resize(m_raytracer->width() * m_raytracer->height() * 4);
+  sf::Clock deltaClock;  
   sf::Texture texture;
-  texture.create(m_raytracer->width(), m_raytracer->height());
   m_running = true;
   while (m_running) {
     APP_PROFILE_SCOPE("MainLoop");
@@ -97,6 +95,8 @@ ExitStatus App::Application::run() {
           m_raytracer->setWidth(scene_width);
           m_raytracer->setHeight(scene_height);
           m_raytracer->setSamplesPerPixel(scene_samples_per_pixel);
+          m_texture.resize(m_raytracer->width() * m_raytracer->height() * 4);
+          texture.create(m_raytracer->width(), m_raytracer->height());
           //m_raytracer->stopRendering();  // Make sure to reset the flag
 
           // Start the ray tracing process in a separate thread
