@@ -19,8 +19,8 @@ add_subdirectory(fmt)
 # SFML
 FetchContent_Declare(
   sfml
-  URL https://github.com/SFML/SFML/archive/refs/tags/2.5.1.zip
-  URL_MD5 2c4438b3e5b2d81a6e626ecf72bf75be
+  GIT_REPOSITORY https://github.com/SFML/SFML.git
+  GIT_TAG 69ea0cd863aed1d4092b970b676924a716ff718b  # 2.6.1
 )
 add_subdirectory(sfml)
 
@@ -28,7 +28,7 @@ add_subdirectory(sfml)
 FetchContent_Declare(
   imgui
   GIT_REPOSITORY https://github.com/ocornut/imgui
-  GIT_TAG 35b1148efb839381b84de9290d9caf0b66ad7d03 # 1.82
+  GIT_TAG c71a50deb5ddf1ea386b91e60fa2e4a26d080074 # 1.87
 )
 
 FetchContent_MakeAvailable(imgui)
@@ -37,7 +37,7 @@ FetchContent_MakeAvailable(imgui)
 FetchContent_Declare(
   imgui-sfml
   GIT_REPOSITORY https://github.com/SFML/imgui-sfml
-  GIT_TAG 82dc2033e51b8323857c3ae1cf1f458b3a933c35 # 2.3
+  GIT_TAG de565ac8f2b795dedc0307b60830cb006afd2ecd # 2.6
 )
 add_subdirectory(imgui-sfml)
 
