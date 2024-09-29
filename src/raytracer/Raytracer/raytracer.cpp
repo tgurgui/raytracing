@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <array>
+#include <iostream>
 
 #include "rtweekend.h"
 
@@ -20,10 +21,10 @@ color ray_color(const ray& r, const hittable& world, int depth) {
         return color{0,0,0};
     }
 
-    if (world.hit(r, 0.001, infinity, rec)) {
+    if (world.hit(r, interval(0.001, infinity), rec)) {
         ray scattered;
         color attenuation;
-        if (rec.mat_ptr->scatter(r, rec, attenuation, scattered)) {
+        if (rec.mat->scatter(r, rec, attenuation, scattered)) {
             return attenuation * ray_color(scattered, world, depth-1);
         }
         return color{0,0,0};
@@ -32,6 +33,23 @@ color ray_color(const ray& r, const hittable& world, int depth) {
     vec3 unit_direction = unit_vector(r.direction());
     auto t = 0.5*(unit_direction.y() + 1.0);
     return (1.0-t)*color(1.0, 1.0, 1.0) + t*color(0.5, 0.7, 1.0);
+}
+
+camera final_render_camera()
+{
+    camera cam;
+
+    cam.aspect_ratio      = 16.0 / 9.0;
+    cam.image_width       = 800;
+    cam.samples_per_pixel = 50;
+    cam.max_depth         = 50;
+
+    cam.vfov     = 20;
+    cam.lookfrom = point3(13,2,3);
+    cam.lookat   = point3(0,0,0);
+    cam.vup      = vec3(0,1,0);
+
+    return std::move(cam);
 }
 
 hittable_list random_scene() {
@@ -91,50 +109,69 @@ void Raytracer::trace(std::vector<unsigned char>& texture)
     auto world = random_scene();
 
     // Camera
-    point3 lookfrom(13,2,3);
-    point3 lookat(0,0,0);
-    vec3 vup(0,1,0);
-    auto dist_to_focus = 10.0;
-    auto aperture = 0.1;
+    //point3 lookfrom(13,2,3);
+    //point3 lookat(0,0,0);
+    //vec3 vup(0,1,0);
+    //auto dist_to_focus = 10.0;
+    //auto aperture = 0.1;
+//
+    //camera cam(lookfrom, lookat, vup, 20, aspect_ratio, aperture, dist_to_focus);
+    camera cam = final_render_camera();
+    std::cout << "Total: " << m_width * m_height * 4 << "\n";
+    std::cout << "Size: " << texture.size() << "\n";
+    cam.image_width = m_width;
+    cam.image_height = m_height;
+    cam.samples_per_pixel = m_samples_per_pixel;
+    cam.render(world, texture);
+    m_is_rendering = false;  // Finished rendering
 
-    camera cam(lookfrom, lookat, vup, 20, aspect_ratio, aperture, dist_to_focus);
-
-    // Render
-    for (int j = 0; j < m_height; ++j) {
-        std::cerr << "\rScanlines remaining: " << m_height - j - 1 << ' ' << std::flush;
-        if (!m_is_rendering)
-                break;
-
-        for (int i = 0; i < m_width; ++i) {
-            color pixel_color(0,0,0);
-            for (int s = 0; s < m_samples_per_pixel; ++s) {
-                auto u = (i + random_double()) / (m_width - 1);
-                auto v = (j + random_double()) / (m_height - 1);
-                ray r = cam.get_ray(u, v);
-                pixel_color += ray_color(r, world, max_depth);
-            }
-
-            // Write pixel
-            {
-                // Divide the color by the number of samples and gamma-correct for gamma=2.0.
-                auto scale = 1.0 / m_samples_per_pixel;
-                pixel_color = scale * pixel_color;
-
-                // Convert color values to unsigned int
-                auto red = static_cast<unsigned int>(256 * clamp(sqrt(pixel_color.x()), 0.0, 0.999));
-                auto green = static_cast<unsigned int>(256 * clamp(sqrt(pixel_color.y()), 0.0, 0.999));
-                auto blue = static_cast<unsigned int>(256 * clamp(sqrt(pixel_color.z()), 0.0, 0.999));
-
-                // Write color values into image
-                int index = ((m_height - j - 1) * m_width + i) * 4;
-
-                texture[index + 0] = red;
-                texture[index + 1] = green;
-                texture[index + 2] = blue;
-                texture[index + 3] = 255; // Aplha channel (fully opaque)
-            }
-        }
-    }
+    return;
+    //// Render
+    //for (int j = 0; j < m_height; ++j) {
+    //    std::cerr << "\rScanlines remaining: " << m_height - j - 1 << ' ' << std::flush;
+    //    if (!m_is_rendering)
+    //            break;
+//
+    //    for (int i = 0; i < m_width; ++i) {
+    //        color pixel_color(0,0,0);
+    //        for (int s = 0; s < m_samples_per_pixel; ++s) {
+    //            auto u = (i + random_double()) / (m_width - 1);
+    //            auto v = (j + random_double()) / (m_height - 1);
+    //            ray r = cam.get_ray(u, v);
+    //            pixel_color += ray_color(r, world, max_depth);
+    //        }
+//
+    //        // Write pixel
+    //        {
+    //            // Divide the color by the number of samples and gamma-correct for gamma=2.0.
+    //            auto scale = 1.0 / m_samples_per_pixel;
+    //            pixel_color = scale * pixel_color;
+//
+    //            auto r = pixel_color.x();
+    //            auto g = pixel_color.y();
+    //            auto b = pixel_color.z();
+//
+    //            // Apply a linear to gamma transform for gamma 2
+    //            r = linear_to_gamma(r);
+    //            g = linear_to_gamma(g);
+    //            b = linear_to_gamma(b);
+//
+    //            // Translate the [0,1] component values to the byte range [0,255].
+    //            static const interval intensity(0.000, 0.999);
+    //            int rbyte = int(256 * intensity.clamp(r));
+    //            int gbyte = int(256 * intensity.clamp(g));
+    //            int bbyte = int(256 * intensity.clamp(b));
+//
+    //            // Write color values into image
+    //            //int index = ((m_height - j - 1) * m_width + i) * 4;
+    //            const int index = ((j-1) * m_width + i) * 4;
+    //            texture[index + 0] = rbyte;
+    //            texture[index + 1] = gbyte;
+    //            texture[index + 2] = bbyte;
+    //            texture[index + 3] = 255; // Aplha channel (fully opaque)
+    //        }
+    //    }
+    //}
 
     std::cerr << "\nDone.\n";
     m_is_rendering = false;  // Finished rendering

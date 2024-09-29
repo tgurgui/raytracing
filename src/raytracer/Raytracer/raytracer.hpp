@@ -2,6 +2,7 @@
 #include<vector>
 #include <atomic>
 
+
 class Raytracer 
 {
 public:
