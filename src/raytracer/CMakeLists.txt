@@ -7,10 +7,12 @@ add_library(${NAME} STATIC
   Raytracer/color.h 
   Raytracer/hittable_list.h
   Raytracer/hittable.h
+  Raytracer/interval.h
   Raytracer/material.h
   Raytracer/ray.h
   Raytracer/rtweekend.h
   Raytracer/sphere.h
+  Raytracer/triangle.h
   Raytracer/vec3.h
   Raytracer/raytracer.hpp
   Raytracer/raytracer.cpp)
