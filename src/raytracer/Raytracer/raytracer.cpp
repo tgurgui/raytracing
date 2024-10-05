@@ -126,12 +126,10 @@ void Raytracer::trace(std::vector<unsigned char>& texture)
 //
     //camera cam(lookfrom, lookat, vup, 20, aspect_ratio, aperture, dist_to_focus);
     camera cam = final_render_camera();
-    std::cout << "Total: " << m_width * m_height * 4 << "\n";
-    std::cout << "Size: " << texture.size() << "\n";
     cam.image_width = m_width;
     cam.image_height = m_height;
     cam.samples_per_pixel = m_samples_per_pixel;
-    cam.render(*world, texture);
+    cam.render(world, texture);
     m_is_rendering = false;  // Finished rendering
 
     return;
