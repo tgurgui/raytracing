@@ -1,6 +1,14 @@
 include(FetchContent)
 
 FetchContent_Declare(
+  assimp
+  GIT_REPOSITORY "https://github.com/assimp/assimp.git"
+  GIT_TAG v5.4.3
+)
+add_subdirectory(assimp)
+
+
+FetchContent_Declare(
   doctest
   GIT_REPOSITORY "https://github.com/onqtam/doctest.git"
   GIT_TAG v2.4.9

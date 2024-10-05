@@ -7,6 +7,7 @@ add_library(${NAME} STATIC
   Raytracer/color.h 
   Raytracer/hittable_list.h
   Raytracer/hittable.h
+  Raytracer/importer.h
   Raytracer/interval.h
   Raytracer/material.h
   Raytracer/ray.h
@@ -22,4 +23,4 @@ target_include_directories(${NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_compile_features(${NAME} PRIVATE cxx_std_20)
 target_link_libraries(${NAME}
 #  PRIVATE project_warnings
-  PUBLIC ImGui-SFML::ImGui-SFML)
+  PUBLIC ImGui-SFML::ImGui-SFML assimp)

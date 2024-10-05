@@ -11,7 +11,7 @@
 #include "hittable_list.h"
 #include "material.h"
 #include "sphere.h"
-
+#include "importer.h"
 
 color ray_color(const ray& r, const hittable& world, int depth) {
     hit_record rec;
@@ -106,8 +106,17 @@ void Raytracer::trace(std::vector<unsigned char>& texture)
     const int max_depth = 50;
 
     // World
-    auto world = random_scene();
+    //auto world = random_scene();
+    std::shared_ptr<hittable_list> world;
+    auto result = DoTheImportThing("cow.obj", world);
 
+    if(!result)
+    {
+        std::cout << "Coulf not retrieve world\n";
+        m_is_rendering = false;
+        return;
+    }
+    std::cout << "world size: " << world->size() << "\n";
     // Camera
     //point3 lookfrom(13,2,3);
     //point3 lookat(0,0,0);
@@ -122,7 +131,7 @@ void Raytracer::trace(std::vector<unsigned char>& texture)
     cam.image_width = m_width;
     cam.image_height = m_height;
     cam.samples_per_pixel = m_samples_per_pixel;
-    cam.render(world, texture);
+    cam.render(*world, texture);
     m_is_rendering = false;  // Finished rendering
 
     return;
