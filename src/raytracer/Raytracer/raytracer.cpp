@@ -6,6 +6,7 @@
 
 #include "rtweekend.h"
 
+#include "bvh.h"
 #include "camera.h"
 #include "color.h"
 #include "hittable_list.h"
@@ -107,16 +108,17 @@ void Raytracer::trace(std::vector<unsigned char>& texture)
 
     // World
     //auto world = random_scene();
-    std::shared_ptr<hittable_list> world;
-    auto result = DoTheImportThing("cow.obj", world);
-
+    std::shared_ptr<hittable_list> loaded;
+    
+    bool result = DoTheImportThing("cow.obj", loaded);
+    auto world = std::make_shared<bvh_node>(*loaded);
     if(!result)
     {
         std::cout << "Coulf not retrieve world\n";
         m_is_rendering = false;
         return;
     }
-    std::cout << "world size: " << world->size() << "\n";
+    //std::cout << "world size: " << world->size() << "\n";
     // Camera
     //point3 lookfrom(13,2,3);
     //point3 lookat(0,0,0);

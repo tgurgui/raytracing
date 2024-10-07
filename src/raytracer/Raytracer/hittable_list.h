@@ -10,7 +10,7 @@
 // You should have received a copy (see file COPYING.txt) of the CC0 Public Domain Dedication
 // along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 //==============================================================================================
-
+#include "aabb.h"
 #include "hittable.h"
 
 #include <vector>
@@ -27,6 +27,7 @@ class hittable_list : public hittable {
 
     void add(shared_ptr<hittable> object) {
         objects.push_back(object);
+        bbox = aabb(bbox, object->bounding_box());
     }
 
     bool hit(const ray& r, interval ray_t, hit_record& rec) const override {
@@ -45,6 +46,11 @@ class hittable_list : public hittable {
         return hit_anything;
     }
     unsigned int size() const { return objects.size(); }
+
+    aabb bounding_box() const override { return bbox; }
+
+  private:
+    aabb bbox;
 };
 
 

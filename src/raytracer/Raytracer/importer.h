@@ -44,7 +44,7 @@ bool DoTheImportThing( const std::string& pFile, std::shared_ptr<hittable_list>&
             const point3 p2{pPos2->x, pPos2->y, pPos2->z};
             const point3 p3{pPos3->x, pPos3->y, pPos3->z};
 
-            output_scene->add(make_shared<triangle>(p1, p2, p3, ground_material));
+            output_scene->add(std::make_shared<triangle>(p1, p2, p3, ground_material));
         }
     }
 
