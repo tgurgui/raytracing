@@ -30,3 +30,5 @@ private:
     unsigned int m_width{1200}, m_height{675}, m_samples_per_pixel{5};
     std::atomic<bool> m_is_rendering{ false };  // Atomic flag to indicate is rendering
 };
+
+void write_ppm(const std::string& filename, const std::vector<unsigned char>& pixels, unsigned int width, unsigned int height);

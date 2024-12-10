@@ -14,6 +14,9 @@
 #include "sphere.h"
 #include "importer.h"
 
+#include <fstream>      // std::ofstream
+
+
 color ray_color(const ray& r, const hittable& world, int depth) {
     hit_record rec;
 
@@ -134,54 +137,42 @@ void Raytracer::trace(std::vector<unsigned char>& texture)
     cam.render(world, texture);
     m_is_rendering = false;  // Finished rendering
 
-    return;
-    //// Render
-    //for (int j = 0; j < m_height; ++j) {
-    //    std::cerr << "\rScanlines remaining: " << m_height - j - 1 << ' ' << std::flush;
-    //    if (!m_is_rendering)
-    //            break;
-//
-    //    for (int i = 0; i < m_width; ++i) {
-    //        color pixel_color(0,0,0);
-    //        for (int s = 0; s < m_samples_per_pixel; ++s) {
-    //            auto u = (i + random_double()) / (m_width - 1);
-    //            auto v = (j + random_double()) / (m_height - 1);
-    //            ray r = cam.get_ray(u, v);
-    //            pixel_color += ray_color(r, world, max_depth);
-    //        }
-//
-    //        // Write pixel
-    //        {
-    //            // Divide the color by the number of samples and gamma-correct for gamma=2.0.
-    //            auto scale = 1.0 / m_samples_per_pixel;
-    //            pixel_color = scale * pixel_color;
-//
-    //            auto r = pixel_color.x();
-    //            auto g = pixel_color.y();
-    //            auto b = pixel_color.z();
-//
-    //            // Apply a linear to gamma transform for gamma 2
-    //            r = linear_to_gamma(r);
-    //            g = linear_to_gamma(g);
-    //            b = linear_to_gamma(b);
-//
-    //            // Translate the [0,1] component values to the byte range [0,255].
-    //            static const interval intensity(0.000, 0.999);
-    //            int rbyte = int(256 * intensity.clamp(r));
-    //            int gbyte = int(256 * intensity.clamp(g));
-    //            int bbyte = int(256 * intensity.clamp(b));
-//
-    //            // Write color values into image
-    //            //int index = ((m_height - j - 1) * m_width + i) * 4;
-    //            const int index = ((j-1) * m_width + i) * 4;
-    //            texture[index + 0] = rbyte;
-    //            texture[index + 1] = gbyte;
-    //            texture[index + 2] = bbyte;
-    //            texture[index + 3] = 255; // Aplha channel (fully opaque)
-    //        }
-    //    }
-    //}
 
     std::cerr << "\nDone.\n";
     m_is_rendering = false;  // Finished rendering
+}
+
+void write_ppm(const std::string& filename, const std::vector<unsigned char>& pixels, unsigned int width, unsigned int height)
+{
+	const unsigned int num_channels = (pixels.size() / (width * height));
+	const bool has_alpha_channel = num_channels == 4;
+    
+    std::ofstream ofs (filename, std::ofstream::out);
+    ofs << "P3\n" << width << ' ' << height << "\n255\n";
+
+    for (int j = 0; j < height; j++) {
+        for (int i = 0; i < width; i++) {
+			// Compute index in vector
+			const int index = j * width + (i * num_channels);
+
+			// Retrieve components from pixel
+			auto r = pixels.at(index);
+			auto g = pixels.at(index + 1);
+			auto b = pixels.at(index + 2);
+
+            // Apply a linear to gamma transform for gamma 2
+            r = linear_to_gamma(r);
+            g = linear_to_gamma(g);
+            b = linear_to_gamma(b);
+
+			// Translate the [0,1] component values to the byte range [0,255].
+			static const interval intensity(0.000, 0.999);
+            const int rbyte = int(256 * intensity.clamp(r));
+            const int gbyte = int(256 * intensity.clamp(g));
+            const int bbyte = int(256 * intensity.clamp(b));
+			
+			// Write color
+            ofs << rbyte << ' ' << gbyte << ' ' << bbyte << '\n';
+        }
+    }
 }
