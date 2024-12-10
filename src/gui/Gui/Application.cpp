@@ -116,7 +116,7 @@ ExitStatus App::Application::run() {
       ImGui::Begin("Scene");
       ImGui::Text("size = %d x %d", m_raytracer->width(), m_raytracer->height());
       static float zoom = 1.0;
-      ImGui::SliderFloat("Zoom", &zoom, 0.25, 3.0, 0, 0);
+      ImGui::SliderFloat("Zoom", &zoom, 0.25, 3.0, nullptr, 0);
 
       // Create SFML texture from the image data
       texture.update(m_texture.data());

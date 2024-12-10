@@ -77,7 +77,7 @@ class camera {
         std::clog << "\rDone.                 \n";
     }
 
-        ray get_ray(unsigned int i, unsigned int j) const {
+    ray get_ray(unsigned int i, unsigned int j) const {
         // Construct a camera ray originating from the defocus disk and directed at a randomly
         // sampled point around the pixel location i, j.
 

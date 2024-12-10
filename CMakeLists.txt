@@ -11,6 +11,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(cmake/StandardProjectSettings.cmake)
+option(BUILD_GUI "Build with ImGUI" FALSE)
 
 # Link this "library" to use the warnings specified in CompilerWarnings.cmake
 add_library(project_warnings INTERFACE)

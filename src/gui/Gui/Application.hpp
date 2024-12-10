@@ -7,7 +7,7 @@
 #include <memory>
 #include <string>
 
-#include "Core/Window.hpp"
+#include "Window.hpp"
 #include "Raytracer/raytracer.hpp"
 
 namespace App {

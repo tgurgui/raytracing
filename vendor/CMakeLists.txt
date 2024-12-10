@@ -24,30 +24,32 @@ FetchContent_Declare(
 )
 add_subdirectory(fmt)
 
-# SFML
-FetchContent_Declare(
-  sfml
-  GIT_REPOSITORY https://github.com/SFML/SFML.git
-  GIT_TAG 69ea0cd863aed1d4092b970b676924a716ff718b  # 2.6.1
-)
-add_subdirectory(sfml)
+if(BUILD_GUI)
+  # SFML
+  FetchContent_Declare(
+    sfml
+    GIT_REPOSITORY https://github.com/SFML/SFML.git
+    GIT_TAG 69ea0cd863aed1d4092b970b676924a716ff718b  # 2.6.1
+  )
+  add_subdirectory(sfml)
 
-# Dear ImGui
-FetchContent_Declare(
-  imgui
-  GIT_REPOSITORY https://github.com/ocornut/imgui
-  GIT_TAG c71a50deb5ddf1ea386b91e60fa2e4a26d080074 # 1.87
-)
+  # Dear ImGui
+  FetchContent_Declare(
+    imgui
+    GIT_REPOSITORY https://github.com/ocornut/imgui
+    GIT_TAG c71a50deb5ddf1ea386b91e60fa2e4a26d080074 # 1.87
+  )
 
-FetchContent_MakeAvailable(imgui)
+  FetchContent_MakeAvailable(imgui)
 
-# ImGui-SFML
-FetchContent_Declare(
-  imgui-sfml
-  GIT_REPOSITORY https://github.com/SFML/imgui-sfml
-  GIT_TAG de565ac8f2b795dedc0307b60830cb006afd2ecd # 2.6
-)
-add_subdirectory(imgui-sfml)
+  # ImGui-SFML
+  FetchContent_Declare(
+    imgui-sfml
+    GIT_REPOSITORY https://github.com/SFML/imgui-sfml
+    GIT_TAG de565ac8f2b795dedc0307b60830cb006afd2ecd # 2.6
+  )
+  add_subdirectory(imgui-sfml)
+endif(BUILD_GUI)
 
 FetchContent_Declare(
   spdlog
