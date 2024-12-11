@@ -21,13 +21,12 @@ int main() {
     {
       APP_PROFILE_SCOPE("Test scope");
       Raytracer raytracer;
-      std::vector<unsigned char> texture;
-      texture.resize(raytracer.width() * raytracer.height() * 4);
-
       raytracer.setWidth(scene_width);
       raytracer.setHeight(scene_height);
       raytracer.setSamplesPerPixel(scene_samples_per_pixel);
       
+      std::vector<unsigned char> texture;
+      texture.resize(raytracer.width() * raytracer.height() * 4);
       raytracer.trace(texture);
       
       write_ppm("output.ppm", texture, raytracer.width(), raytracer.height());
