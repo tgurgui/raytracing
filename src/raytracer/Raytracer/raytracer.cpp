@@ -153,26 +153,15 @@ void write_ppm(const std::string& filename, const std::vector<unsigned char>& pi
     for (int j = 0; j < height; j++) {
         for (int i = 0; i < width; i++) {
 			// Compute index in vector
-			const int index = j * width + (i * num_channels);
+			const int index = ((j * width) + i) * num_channels;
 
 			// Retrieve components from pixel
 			auto r = pixels.at(index);
 			auto g = pixels.at(index + 1);
 			auto b = pixels.at(index + 2);
-
-            // Apply a linear to gamma transform for gamma 2
-            r = linear_to_gamma(r);
-            g = linear_to_gamma(g);
-            b = linear_to_gamma(b);
-
-			// Translate the [0,1] component values to the byte range [0,255].
-			static const interval intensity(0.000, 0.999);
-            const int rbyte = int(256 * intensity.clamp(r));
-            const int gbyte = int(256 * intensity.clamp(g));
-            const int bbyte = int(256 * intensity.clamp(b));
 			
 			// Write color
-            ofs << rbyte << ' ' << gbyte << ' ' << bbyte << '\n';
+            ofs << int{r} << ' ' << int{g} << ' ' << int{b} << '\n';
         }
     }
 }
