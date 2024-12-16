@@ -72,7 +72,6 @@ class aabb {
     static const aabb empty, universe;
 };
 
-const aabb aabb::empty    = aabb(interval::empty,    interval::empty,    interval::empty);
-const aabb aabb::universe = aabb(interval::universe, interval::universe, interval::universe);
+
 
 #endif

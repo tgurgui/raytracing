@@ -6,8 +6,11 @@ add_library(${NAME} STATIC)
 
 target_sources(${NAME}
   PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/Raytracer/aabb.cpp 
+    ${CMAKE_CURRENT_SOURCE_DIR}/Raytracer/interval.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Raytracer/raytracer.cpp
   PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/Raytracer/aabb.h 
     ${CMAKE_CURRENT_SOURCE_DIR}/Raytracer/camera.h 
     ${CMAKE_CURRENT_SOURCE_DIR}/Raytracer/color.h 
     ${CMAKE_CURRENT_SOURCE_DIR}/Raytracer/hittable_list.h

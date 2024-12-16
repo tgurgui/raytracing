@@ -1,6 +1,8 @@
 #ifndef INTERVAL_H
 #define INTERVAL_H
 
+#include "rtweekend.h"
+
 //==============================================================================================
 // To the extent possible under law, the author(s) have dedicated all copyright and related and
 // neighboring rights to this software to the public domain worldwide. This software is
@@ -24,25 +26,25 @@ class interval {
         max = a.max >= b.max ? a.max : b.max;
     }
 
-    double size() const {
+    [[nodiscard]] double size() const {
         return max - min;
     }
 
-    bool contains(double x) const {
+    [[nodiscard]] bool contains(double x) const {
         return min <= x && x <= max;
     }
 
-    bool surrounds(double x) const {
+    [[nodiscard]] bool surrounds(double x) const {
         return min < x && x < max;
     }
 
-    double clamp(double x) const {
+    [[nodiscard]] double clamp(double x) const {
         if (x < min) return min;
         if (x > max) return max;
         return x;
     }
 
-    interval expand(double delta) const {
+    [[nodiscard]] interval expand(double delta) const {
         auto padding = delta/2;
         return interval(min - padding, max + padding);
     }
@@ -50,9 +52,5 @@ class interval {
 
     static const interval empty, universe;
 };
-
-const interval interval::empty    = interval(+infinity, -infinity);
-const interval interval::universe = interval(-infinity, +infinity);
-
 
 #endif
