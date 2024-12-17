@@ -102,7 +102,7 @@ hittable_list random_scene() {
     return world;
 }
 
-void Raytracer::trace(std::vector<unsigned char>& texture)
+void Raytracer::trace(std::shared_ptr<hittable_list> scene, std::vector<unsigned char>& texture)
 {
     m_is_rendering = true;  // Start rendering
     // Image
@@ -111,16 +111,16 @@ void Raytracer::trace(std::vector<unsigned char>& texture)
 
     // World
     //auto world = random_scene();
-    std::shared_ptr<hittable_list> loaded;
-    
-    bool result = DoTheImportThing("cow.obj", loaded);
-    auto world = std::make_shared<bvh_node>(*loaded);
-    if(!result)
-    {
-        std::cout << "Coulf not retrieve world\n";
-        m_is_rendering = false;
-        return;
-    }
+    //std::shared_ptr<hittable_list> loaded;
+    //
+    //bool result = DoTheImportThing("cow.obj", loaded);
+    //auto world = std::make_shared<bvh_node>(*loaded);
+    //if(!result)
+    //{
+    //    std::cout << "Coulf not retrieve world\n";
+    //    m_is_rendering = false;
+    //    return;
+    //}
     //std::cout << "world size: " << world->size() << "\n";
     // Camera
     //point3 lookfrom(13,2,3);
@@ -134,7 +134,7 @@ void Raytracer::trace(std::vector<unsigned char>& texture)
     cam.image_width = m_width;
     cam.image_height = m_height;
     cam.samples_per_pixel = m_samples_per_pixel;
-    cam.render(world, texture);
+    cam.render(scene, texture);
     m_is_rendering = false;  // Finished rendering
 
 

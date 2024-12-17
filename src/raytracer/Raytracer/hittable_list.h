@@ -45,7 +45,7 @@ class hittable_list : public hittable {
 
         return hit_anything;
     }
-    unsigned int size() const { return objects.size(); }
+    size_t size() const { return objects.size(); }
 
     aabb bounding_box() const override { return bbox; }
 

@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2022 Martin Helmut Fieber <info@martin-fieber.se>
  */
+#include "Raytracer/hittable_list.h"
 #include "Raytracer/raytracer.hpp"
 
 #include <exception>
@@ -25,9 +26,12 @@ int main() {
       raytracer.setHeight(scene_height);
       raytracer.setSamplesPerPixel(scene_samples_per_pixel);
       
+      // Create texture
       std::vector<unsigned char> texture;
       texture.resize(raytracer.width() * raytracer.height() * 4);
-      raytracer.trace(texture);
+      
+      auto scene = std::make_shared<hittable_list>(random_scene());
+      raytracer.trace(scene, texture);
       
       write_ppm("output.ppm", texture, raytracer.width(), raytracer.height());
     }

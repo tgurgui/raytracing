@@ -1,14 +1,14 @@
 #pragma once
 #include<vector>
 #include <atomic>
+// fw declaration
+class hittable_list;
 
 class Raytracer 
 {
 public:
 
-    //Raytracer() = default;
-
-    void trace(std::vector<unsigned char>& texture);
+    void trace(std::shared_ptr<hittable_list> scene, std::vector<unsigned char>& texture);
     unsigned int width() const {return m_width;}
     unsigned int height() const {return m_height;}
     unsigned int samplesPerPixel() const {return m_samples_per_pixel;}
@@ -31,4 +31,5 @@ private:
     std::atomic<bool> m_is_rendering{ false };  // Atomic flag to indicate is rendering
 };
 
+hittable_list random_scene();
 void write_ppm(const std::string& filename, const std::vector<unsigned char>& pixels, unsigned int width, unsigned int height);
