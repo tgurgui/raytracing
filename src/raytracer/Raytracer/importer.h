@@ -25,7 +25,7 @@ bool DoTheImportThing( const std::string& pFile, std::shared_ptr<hittable_list>&
     }
 
     // Now we can access the file's contents.
-    const auto ground_material = make_shared<lambertian>(color(0.5, 0.5, 0.5));
+    const auto ground_material = std::make_shared<lambertian>(color(0.5, 0.5, 0.5));
     output_scene.reset(new hittable_list{});
     for (unsigned int i = 0 ; i < pScene->mNumMeshes ; i++) {
         const aiMesh* paiMesh = pScene->mMeshes[i];

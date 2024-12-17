@@ -1,6 +1,8 @@
 #pragma once
-#include<vector>
+#include <vector>
 #include <atomic>
+#include <memory>
+
 // fw declaration
 class hittable_list;
 

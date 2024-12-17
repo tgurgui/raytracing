@@ -7,7 +7,7 @@
 class triangle : public hittable
 {
 public:
-	triangle(const point3& p_1, const point3& p_2, const point3& p_3, shared_ptr<material> material):
+	triangle(const point3& p_1, const point3& p_2, const point3& p_3, std::shared_ptr<material> material):
 		p1(p_1), p2(p_2), p3(p_3), mat(material) 
 		{
 			const double x_min = std::min(p1.x(), std::min(p2.x(), p3.x()));
@@ -46,21 +46,14 @@ public:
 			
 			return true;
 		}
-		else
-		{
-			return false;
-		}
-
-		
-
-		return true;
+		return false;
 	}
 
     aabb bounding_box() const override { return bbox; }
 	
 private:
 	point3 p1, p2, p3;
-	shared_ptr<material> mat;
+	std::shared_ptr<material> mat;
     aabb bbox;
 
 };

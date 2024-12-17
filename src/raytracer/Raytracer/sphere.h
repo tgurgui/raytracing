@@ -16,7 +16,7 @@
 
 class sphere : public hittable {
   public:
-    sphere(const point3& center, double radius, shared_ptr<material> mat)
+    sphere(const point3& center, double radius, std::shared_ptr<material> mat)
        : center(center/*, vec3(0,0,0)*/), radius(std::fmax(0,radius)), mat(mat)
     {
         auto rvec = vec3(radius, radius, radius);
@@ -57,7 +57,7 @@ class sphere : public hittable {
   private:
     point3 center;
     double radius;
-    shared_ptr<material> mat;
+    std::shared_ptr<material> mat;
     aabb bbox;
 };
 

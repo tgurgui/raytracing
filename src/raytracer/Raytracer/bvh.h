@@ -14,7 +14,7 @@ class bvh_node : public hittable {
         // persist the resulting bounding volume hierarchy.
     }
 
-    bvh_node(std::vector<shared_ptr<hittable>>& objects, size_t start, size_t end) {
+    bvh_node(std::vector<std::shared_ptr<hittable>>& objects, size_t start, size_t end) {
         // Build the bounding box of the span of source objects.
         bbox = aabb::empty;
         for (size_t object_index=start; object_index < end; object_index++)
@@ -57,27 +57,26 @@ class bvh_node : public hittable {
     aabb bounding_box() const override { return bbox; }
 
   private:
-    shared_ptr<hittable> left;
-    shared_ptr<hittable> right;
+    std::shared_ptr<hittable> left;
+    std::shared_ptr<hittable> right;
     aabb bbox;
 
     static bool box_compare(
-        const shared_ptr<hittable> a, const shared_ptr<hittable> b, int axis_index
-    ) {
+        const std::shared_ptr<hittable> a, const std::shared_ptr<hittable> b, int axis_index) {
         auto a_axis_interval = a->bounding_box().axis_interval(axis_index);
         auto b_axis_interval = b->bounding_box().axis_interval(axis_index);
         return a_axis_interval.min < b_axis_interval.min;
     }
 
-    static bool box_x_compare (const shared_ptr<hittable> a, const shared_ptr<hittable> b) {
+    static bool box_x_compare (const std::shared_ptr<hittable> a, const std::shared_ptr<hittable> b) {
         return box_compare(a, b, 0);
     }
 
-    static bool box_y_compare (const shared_ptr<hittable> a, const shared_ptr<hittable> b) {
+    static bool box_y_compare (const std::shared_ptr<hittable> a, const std::shared_ptr<hittable> b) {
         return box_compare(a, b, 1);
     }
 
-    static bool box_z_compare (const shared_ptr<hittable> a, const shared_ptr<hittable> b) {
+    static bool box_z_compare (const std::shared_ptr<hittable> a, const std::shared_ptr<hittable> b) {
         return box_compare(a, b, 2);
     }
 };
