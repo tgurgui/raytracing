@@ -53,6 +53,9 @@ class sphere : public hittable {
     }
 
     aabb bounding_box() const override { return bbox; }
+    point3 get_center() const { return center; }
+    double get_radius() const { return radius; }
+    std::shared_ptr<material> get_material() const { return mat; }
 
   private:
     point3 center;

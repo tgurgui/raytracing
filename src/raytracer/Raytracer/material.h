@@ -19,10 +19,10 @@ class material {
     virtual ~material() = default;
 
     virtual bool scatter(
-        const ray& r_in, 
-        const hit_record& rec, 
-        color& attenuation, 
-        ray& scattered
+        [[maybe_unused]] const ray& r_in, 
+        [[maybe_unused]] const hit_record& rec, 
+        [[maybe_unused]] color& attenuation, 
+        [[maybe_unused]] ray& scattered
     ) const {
         return false;
     }
@@ -46,6 +46,8 @@ class lambertian : public material {
         return true;
     }
 
+    color get_albedo() const { return albedo; }
+
   private:
     color albedo;
 };
@@ -63,6 +65,8 @@ class metal : public material {
         attenuation = albedo;
         return (dot(scattered.direction(), rec.normal) > 0);
     }
+    color get_albedo() const { return albedo; }
+    double get_fuzz() const { return fuzz; }
 
   private:
     color albedo;
@@ -94,6 +98,7 @@ class dielectric : public material {
         scattered = ray(rec.p, direction);
         return true;
     }
+    double get_refraction_index() const { return refraction_index; }
 
   private:
     // Refractive index in vacuum or air, or the ratio of the material's refractive index over

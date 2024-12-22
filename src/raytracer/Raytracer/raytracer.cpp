@@ -38,21 +38,21 @@ color ray_color(const ray& r, const hittable& world, int depth) {
     return (1.0-t)*color(1.0, 1.0, 1.0) + t*color(0.5, 0.7, 1.0);
 }
 
-camera final_render_camera()
+std::shared_ptr<camera> final_render_camera()
 {
-    camera cam;
+    auto cam = std::make_shared<camera>();
 
-    cam.aspect_ratio      = 16.0 / 9.0;
-    cam.image_width       = 800;
-    cam.samples_per_pixel = 50;
-    cam.max_depth         = 50;
+    cam->aspect_ratio      = 16.0 / 9.0;
+    cam->image_width       = 800;
+    cam->samples_per_pixel = 50;
+    cam->max_depth         = 50;
 
-    cam.vfov     = 20;
-    cam.lookfrom = point3(13,2,3);
-    cam.lookat   = point3(0,0,0);
-    cam.vup      = vec3(0,1,0);
+    cam->vfov     = 20;
+    cam->lookfrom = point3(13,2,3);
+    cam->lookat   = point3(0,0,0);
+    cam->vup      = vec3(0,1,0);
 
-    return std::move(cam);
+    return cam;
 }
 
 hittable_list random_scene() {
@@ -130,11 +130,11 @@ void Raytracer::trace(std::shared_ptr<hittable_list> scene, std::vector<unsigned
     //auto aperture = 0.1;
 //
     //camera cam(lookfrom, lookat, vup, 20, aspect_ratio, aperture, dist_to_focus);
-    camera cam = final_render_camera();
-    cam.image_width = m_width;
-    cam.image_height = m_height;
-    cam.samples_per_pixel = m_samples_per_pixel;
-    cam.render(scene, texture);
+    auto cam = final_render_camera();
+    cam->image_width = m_width;
+    cam->image_height = m_height;
+    cam->samples_per_pixel = m_samples_per_pixel;
+    cam->render(scene, texture);
     m_is_rendering = false;  // Finished rendering
 
 

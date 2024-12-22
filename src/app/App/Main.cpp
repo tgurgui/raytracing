@@ -3,13 +3,17 @@
  */
 #include "Raytracer/hittable_list.h"
 #include "Raytracer/raytracer.hpp"
+#include "Raytracer/scene_io.h"
+
+#include "Core/Debug/Instrumentor.hpp"
+#include "Core/Log.hpp"
+
+#include "nlohmann/json.hpp"
 
 #include <exception>
 #include <iostream>
 #include <vector>
 
-#include "Core/Debug/Instrumentor.hpp"
-#include "Core/Log.hpp"
 
 int main() {
 	unsigned int scene_width{800};
@@ -31,6 +35,10 @@ int main() {
       texture.resize(raytracer.width() * raytracer.height() * 4);
       
       auto scene = std::make_shared<hittable_list>(random_scene());
+      std::cout << "Write\n";
+      write_scene("output.scene", *final_render_camera().get(), scene);
+      std::cout << "Wrote\n";
+
       raytracer.trace(scene, texture);
       
       write_ppm("output.ppm", texture, raytracer.width(), raytracer.height());

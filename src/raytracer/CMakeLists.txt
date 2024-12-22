@@ -20,6 +20,7 @@ target_sources(${NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/Raytracer/material.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Raytracer/ray.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Raytracer/rtweekend.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Raytracer/scene_io.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Raytracer/sphere.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Raytracer/triangle.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Raytracer/vec3.h
@@ -31,4 +32,4 @@ target_include_directories(${NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_compile_features(${NAME} PRIVATE cxx_std_20)
 target_link_libraries(${NAME}
 #  PRIVATE project_warnings
-  PUBLIC assimp)
+  PUBLIC assimp nlohmann_json::nlohmann_json)

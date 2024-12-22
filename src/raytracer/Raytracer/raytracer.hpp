@@ -5,6 +5,7 @@
 
 // fw declaration
 class hittable_list;
+class camera;
 
 class Raytracer 
 {
@@ -31,7 +32,9 @@ public:
 private:
     unsigned int m_width{1200}, m_height{675}, m_samples_per_pixel{5};
     std::atomic<bool> m_is_rendering{ false };  // Atomic flag to indicate is rendering
+    std::shared_ptr<camera> m_camera {nullptr};
 };
 
+std::shared_ptr<camera> final_render_camera();
 hittable_list random_scene();
 void write_ppm(const std::string& filename, const std::vector<unsigned char>& pixels, unsigned int width, unsigned int height);
