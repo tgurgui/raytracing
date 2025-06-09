@@ -5,6 +5,8 @@
 #include "hittable.h"
 #include "hittable_list.h"
 
+#include <algorithm>
+
 class bvh_node : public hittable {
   public:
     bvh_node(hittable_list list) : bvh_node(list.objects, 0, list.objects.size()) {
