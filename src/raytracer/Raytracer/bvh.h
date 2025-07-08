@@ -4,6 +4,7 @@
 #include "aabb.h"
 #include "hittable.h"
 #include "hittable_list.h"
+#include <algorithm>
 
 class bvh_node : public hittable {
   public:
@@ -37,8 +38,8 @@ class bvh_node : public hittable {
             std::sort(std::begin(objects) + start, std::begin(objects) + end, comparator);
 
             auto mid = start + object_span/2;
-            left = make_shared<bvh_node>(objects, start, mid);
-            right = make_shared<bvh_node>(objects, mid, end);
+            left = std::make_shared<bvh_node>(objects, start, mid);
+            right = std::make_shared<bvh_node>(objects, mid, end);
         }
 
         bbox = aabb(left->bounding_box(), right->bounding_box());
