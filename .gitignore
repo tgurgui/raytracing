@@ -1,4 +1,5 @@
 build/
+.cache/
 profile.json
 *-profile.json
 *.log
